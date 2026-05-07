@@ -19,7 +19,7 @@ export default function Inventory() {
 
   const { data: containers, isLoading } = useQuery({
     queryKey: ['containers'],
-    queryFn: () => base44.entities.Container.filter({ is_available: true }),
+queryFn: () => base44.entities.Container.filter({ is_available: true }),
     initialData: [],
   });
 

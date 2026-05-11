@@ -3,6 +3,7 @@ import { ShoppingCart, Phone, MapPin, ChevronDown, Check, Loader2 } from 'lucide
 import { SIZE_OPTIONS } from './SizeSelector';
 import { isValidZipCode, calculateDeliveryFee } from '@/lib/zipUtils';
 import { motion, AnimatePresence } from 'framer-motion';
+import CheckoutModal from './CheckoutModal';
 
 // Used → first 3 grades only. New → only IICL.
 const USED_GRADES = [
@@ -36,6 +37,8 @@ export default function ShippingCalculator({
   const [deliveryInfo, setDeliveryInfo] = useState(null);
   const [isCalculating, setIsCalculating] = useState(false);
   const [addedSuccess, setAddedSuccess] = useState(false);
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [checkoutItem, setCheckoutItem] = useState(null);
 
   // Auto-calculate if initial zip is valid
   useEffect(() => {
@@ -71,6 +74,16 @@ export default function ShippingCalculator({
     : zip && isValidZipCode(zip) ? zip : 'Enter ZIP code';
 
   const handleAddToCart = () => {
+    const gradeLabel = gradeOptions.find(g => g.key === grade)?.label || grade;
+    const condLabel = condition === 'new' ? 'New' : 'Used';
+    setCheckoutItem({
+      title: `${condLabel} ${sizeOption.label} Shipping Container`,
+      sub: `${sizeOption.dims} · ${gradeLabel}`,
+      img: sizeOption.image,
+      unitPrice: basePrice,
+      qty,
+    });
+    setCheckoutOpen(true);
     setAddedSuccess(true);
     setTimeout(() => setAddedSuccess(false), 2000);
   };
@@ -408,6 +421,17 @@ export default function ShippingCalculator({
         </a>{' '}
         Ask about specials in your area to save even more.
       </div>
+
+      {/* ── CHECKOUT MODAL ── */}
+      <AnimatePresence>
+        {checkoutOpen && (
+          <CheckoutModal
+            isOpen={checkoutOpen}
+            onClose={() => setCheckoutOpen(false)}
+            item={checkoutItem}
+          />
+        )}
+      </AnimatePresence>
 
     </div>
   );

@@ -126,7 +126,7 @@ export default function ProductDetail() {
           </div>
 
           {/* Right — Purchase Panel (Sticky) */}
-          <div className="lg:sticky lg:top-24 self-start">
+          <div className="lg:sticky lg:top-24 self-start rounded-2xl p-5" style={{ background: '#07080a' }}>
             <ShippingCalculator
               container={container}
               initialZip={zipCode}

@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { containers as localContainers } from '@/data/containers';
+import { base44 } from '@/api/base44Client';
 import InventoryListCard from '@/components/inventory/InventoryListCard';
 import FilterSidebar from '@/components/inventory/FilterSidebar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -17,9 +17,11 @@ export default function Inventory() {
   const [filters, setFilters] = useState({ size: [], condition: [], grade: [], height: [] });
   const [sortBy, setSortBy] = useState('default');
 
-  const containers = localContainers;
-  const isLoading = false;
-
+  const { data: containers, isLoading } = useQuery({
+    queryKey: ['containers'],
+    queryFn: () => base44.entities.Container.filter({ is_available: true }),
+    initialData: [],
+  });
 
   const locationInfo = zipCode ? getLocationFromZip(zipCode) : null;
 
